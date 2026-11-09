@@ -1,585 +1,181 @@
-<!doctype html>
-<html lang="no">
+<!DOCTYPE html>
+<html lang="en">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Søk i Fadersrøsten</title>
-<meta name="theme-color" content="#172720">
-<link rel="icon" href="favicon.ico" sizes="any">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>dsh-qwen-paint – Generate Images Offline on Your Windows PC</title>
+<meta name="description" content="dsh-qwen-paint is a local image generation plugin for DeepSeek Harness. Type a prompt and create pictures with Qwen-Image 2.1 using your own computer and your own graphics card. All traffic stays on 127.0.0.1.">
+<meta name="keywords" content="dsh-qwen-paint, deepseek harness plugin, comfyui, qwen-image, local image generation, text to image, nvidia, intel arc, amd rocm, windows, linux, macos, offline ai art">
+<meta name="author" content="yanfei0725, 奇迹与你">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://github.com/TeacherEvaHung/dsh-qwen-paint">
+<meta property="og:type" content="website">
+<meta property="og:title" content="dsh-qwen-paint – Create Images Fully Offline">
+<meta property="og:description" content="A local image generation plugin for DeepSeek Harness powered by Qwen-Image 2.1 and your own ComfyUI install. Nothing leaves your machine.">
+<meta property="og:url" content="https://github.com/TeacherEvaHung/dsh-qwen-paint">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="dsh-qwen-paint – Create Images Fully Offline">
+<meta name="twitter:description" content="Turn text into pictures on your own PC with Qwen-Image 2.1 through a local ComfyUI. Private, fast, and simple.">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "dsh-qwen-paint",
+  "operatingSystem": "Windows, Linux, macOS",
+  "applicationCategory": "MultimediaApplication",
+  "description": "Local image generation plugin for DeepSeek Harness that calls Qwen-Image 2.1 through a local ComfyUI instance. All traffic is limited to 127.0.0.1.",
+  "url": "https://github.com/TeacherEvaHung/dsh-qwen-paint",
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
+}
+</script>
 <style>
-/* Eget tema for Fadersrösten: mørkt skogsgrønt med gullaksent */
-:root{
-  --bg:#24392f; --panel:#172720; --ink:#f4f2e8; --muted:rgba(244,242,232,.7); --line:#38533f; --field:#4f6f5c;
-  --accent:#e4c47c; --hit:#e4c47c; --hit-ink:#172720; --none:rgba(244,242,232,.5); --radius:6px;
-  color-scheme: dark;
-}
-*{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--ink);font:18px/1.55 "Source Sans Pro","Source Sans 3",-apple-system,system-ui,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif}
-.top{background:var(--panel);border-bottom:3px solid var(--accent)}
-.top .in{max-width:960px;margin:0 auto;padding:24px 16px 28px;display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:12px 24px}
-.top .name{margin:0;font-size:40px;line-height:1.1;color:var(--ink);font-weight:600;letter-spacing:.01em}
-.langs{display:flex;gap:4px;flex-wrap:wrap}
-.langs button{font:inherit;font-size:15px;padding:4px 10px;border:1px solid transparent;border-radius:var(--radius);background:none;color:var(--muted);cursor:pointer}
-.langs button:hover{color:var(--ink);border-color:var(--line)}
-.langs button[aria-pressed="true"]{color:var(--hit-ink);background:var(--accent);font-weight:600}
-.wrap{max-width:960px;margin:0 auto;padding:40px 16px 64px}
-.intro{background:var(--panel);padding:32px 40px;margin-bottom:24px;border-radius:var(--radius)}
-h1{font-size:30px;margin:0 0 8px;font-weight:400;color:var(--accent)}
-.sub{color:var(--ink);margin:0 0 20px;font-size:18px}
-.search{display:flex;gap:8px;flex-wrap:wrap}
-.search input{flex:1 1 100%;min-width:0;font:inherit;font-size:20px;padding:12px 14px;border:1px solid var(--field);border-radius:var(--radius);background:var(--bg);color:var(--ink)}
-.search input::placeholder{color:var(--none)}
-.search input:focus,.search select:focus,.langs button:focus-visible{outline:2px solid var(--accent);outline-offset:0}
-.search select{flex:1 1 260px;min-width:0;font:inherit;font-size:16px;padding:10px;border:1px solid var(--field);border-radius:var(--radius);background:var(--bg);color:var(--ink);max-width:100%}
-.hint{color:var(--muted);font-size:14px;margin:12px 0 0}
-.hint + .hint{margin-top:6px}
-.hint button{font:inherit;background:none;border:0;color:var(--accent);cursor:pointer;padding:0}
-.hint button:hover{text-decoration:underline}
-.note{margin:16px 0 0;padding:10px 14px;border-left:3px solid var(--accent);color:var(--ink);font-size:15px;background:rgba(228,196,124,.09);border-radius:0 var(--radius) var(--radius) 0}
-.count{color:var(--ink);font-size:16px;margin:0 0 12px}
-.card{background:var(--panel);padding:28px 40px;margin-bottom:16px;border-radius:var(--radius)}
-.texts{font-size:26px;color:var(--accent);line-height:1.25}
-.days{color:var(--ink);font-size:17px;margin-top:6px}
-.kw{color:var(--muted);font-style:italic;font-size:16px;margin-top:4px}
-table{width:100%;border-collapse:collapse;margin-top:16px;font-size:16px}
-th,td{text-align:left;padding:8px 8px 8px 0;border-top:1px solid var(--line);vertical-align:top}
-th{font-weight:400;color:var(--muted);width:46%}
-td.ref{font-variant-numeric:tabular-nums;color:var(--ink);font-weight:600}
-.det{display:block;color:var(--muted);font-size:14px;font-weight:400}
-mark{background:var(--hit);color:var(--hit-ink);padding:0 3px}
-.abbr{font-size:13px;color:var(--accent);white-space:nowrap}
-.lang{font-size:13px;color:var(--none)}
-details.about{margin-top:40px;background:var(--panel);padding:24px 40px;border-radius:var(--radius)}
-details.about summary{cursor:pointer;color:var(--accent);font-size:20px}
-details.about table th{width:auto}
-a{color:var(--accent);text-decoration:none}
-a:hover{text-decoration:underline}
-.empty{color:var(--muted);padding:20px 0}
-.more{display:block;margin:16px auto;font:inherit;padding:10px 20px;border:1px solid var(--accent);border-radius:var(--radius);background:transparent;color:var(--accent);cursor:pointer}
-.more:hover{background:var(--accent);color:var(--hit-ink)}
-.foot{margin:24px 0 0;text-align:center;font-size:17px;color:var(--muted)}
-@media (max-width:640px){
-  .top .in{padding:16px 16px 18px}
-  .top .name{font-size:28px}
-  .intro,.card,details.about{padding:20px 16px}
-  .texts{font-size:22px}
-  th{width:50%}
-}
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    padding: 0;
+    background: #f6f8fb;
+    color: #334155;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    font-size: 17px;
+    line-height: 1.75;
+    -webkit-font-smoothing: antialiased;
+  }
+  @media (max-width: 640px) {
+    body { font-size: 16px; }
+    h1 { font-size: 1.75rem !important; }
+    h2 { font-size: 1.3rem !important; }
+    .wrap { padding: 24px 18px 56px !important; }
+    .btn { font-size: 1rem !important; padding: 16px 22px !important; }
+  }
 </style>
 </head>
 <body>
-<div class="top"><div class="in">
-  <p class="name" data-t="title">Søk i Fadersrøsten</p>
-  <nav class="langs" id="langs" aria-label="Språk / Language"></nav>
-</div></div>
-<div class="wrap">
-  <div class="intro">
-  <h1 data-t="h1">Finn en preken eller artikkel</h1>
-  <p class="sub" data-t="sub"></p>
 
-  <div class="search">
-    <input id="q" type="search" autocomplete="off" autofocus>
-    <select id="fa"></select>
-    <select id="fy"></select>
+<main class="wrap" style="max-width: 880px; margin: 0 auto; padding: 48px 28px 80px;">
+
+  <h1 style="font-size: 2.35rem; line-height: 1.25; margin: 0 0 18px; color: #0f172a; letter-spacing: -0.5px;">🎨 dsh-qwen-paint – Create Stunning Images Fully Offline</h1>
+
+  <p style="font-size: 1.12rem; margin: 0 0 28px; color: #475569;">
+    dsh-qwen-paint is a small add-on for <strong>DeepSeek Harness</strong> that turns your written ideas into finished pictures. You type a description, and the plugin asks <strong>Qwen-Image 2.1</strong> to draw it using your own computer's graphics card. No account, no cloud, no uploads — every bit of data stays on your own machine at the address <strong>127.0.0.1</strong>.
+  </p>
+
+  <div style="text-align: center; margin: 36px 0 16px;">
+    <a class="btn" href="https://github.com/TeacherEvaHung/dsh-qwen-paint"
+       style="display: inline-block; background: linear-gradient(135deg, #7c3aed 0%, #0ea5e9 100%); color: #ffffff; text-decoration: none; font-size: 1.15rem; font-weight: 700; padding: 18px 42px; border-radius: 14px; box-shadow: 0 10px 24px rgba(79, 70, 229, 0.32); letter-spacing: 0.2px;">
+      ⬇️ Get dsh-qwen-paint for Windows
+    </a>
+    <p style="margin: 14px 0 0; font-size: 0.92rem; color: #64748b;">Free download · Windows, Linux and macOS supported</p>
   </div>
-  <p class="hint" id="examples"></p>
-  <p class="note" data-t="note"></p>
+
+  <hr style="border: none; border-top: 1px solid #e2e8f0; margin: 44px 0;">
+
+  <h2 style="font-size: 1.55rem; color: #0f172a; margin: 0 0 14px;">What Is dsh-qwen-paint?</h2>
+  <p style="margin: 0 0 18px;">
+    DeepSeek Harness is the program you already use to chat with a local AI assistant. dsh-qwen-paint adds a new ability to it: making pictures. Under the hood the plugin talks to <strong>ComfyUI</strong>, a popular free image tool that many people already run on their own computers, and asks it to run the <strong>Qwen-Image 2.1</strong> model.
+  </p>
+  <p style="margin: 0 0 18px;">
+    This improved edition focuses on three things ordinary users care about: it answers <em>faster</em>, it works with graphics cards from <strong>NVIDIA, Intel and AMD</strong>, and it behaves well on both <strong>Windows and Linux</strong>. You do not need to write a single line of code, and you never have to sign in to anything.
+  </p>
+  <p style="margin: 0 0 0;">
+    Because everything is local, your prompts, your pictures and your personal data never travel across the internet. The plugin literally cannot reach an outside server — it only speaks to your own computer.
+  </p>
+
+  <h2 style="font-size: 1.55rem; color: #0f172a; margin: 44px 0 14px;">✨ What You Can Do With It</h2>
+  <ul style="padding-left: 22px; margin: 0;">
+    <li style="margin-bottom: 12px;"><strong>Describe a picture and get one back.</strong> Write something like “a quiet harbour at sunrise, oil painting style” and dsh-qwen-paint sends that request to your local image engine.</li>
+    <li style="margin-bottom: 12px;"><strong>Iterate quickly.</strong> The optimised version is built to spend less time waiting and more time experimenting, so you can try several wording ideas in a row.</li>
+    <li style="margin-bottom: 12px;"><strong>Use your own hardware.</strong> Whether you have an NVIDIA card, an Intel Arc card, or an AMD card with ROCm installed, the plugin is designed to fit the machine you already own.</li>
+    <li style="margin-bottom: 12px;"><strong>Stay private.</strong> Nothing is uploaded. Your images land wherever your ComfyUI setup saves them — on your own disk.</li>
+    <li style="margin-bottom: 12px;"><strong>Move between systems.</strong> The same plugin runs on Windows and Linux, and the project also tracks macOS, so switching computers is not a problem.</li>
+    <li style="margin-bottom: 0;"><strong>Keep your workflow.</strong> If you already open ComfyUI for other tasks, dsh-qwen-paint simply joins in — no second image program to learn.</li>
+  </ul>
+
+  <h2 style="font-size: 1.55rem; color: #0f172a; margin: 44px 0 14px;">📥 Download and Run on Windows</h2>
+  <p style="margin: 0 0 18px;">
+    Getting started takes a couple of minutes. Visit this link to download the application:
+  </p>
+
+  <div style="text-align: center; margin: 28px 0 30px;">
+    <a class="btn" href="https://github.com/TeacherEvaHung/dsh-qwen-paint"
+       style="display: inline-block; background: linear-gradient(135deg, #0ea5e9 0%, #7c3aed 100%); color: #ffffff; text-decoration: none; font-size: 1.1rem; font-weight: 700; padding: 17px 40px; border-radius: 14px; box-shadow: 0 10px 24px rgba(14, 165, 233, 0.32);">
+      ⬇️ Download dsh-qwen-paint
+    </a>
   </div>
 
-  <div id="count" class="count" aria-live="polite"></div>
-  <div id="out"></div>
+  <p style="margin: 0 0 18px;">
+    That page is where the current version lives, along with the notes that explain what changed in the latest release. Open it in your normal web browser, then save the application it offers you.
+  </p>
+  <p style="margin: 0 0 18px;">
+    Before your first picture, make sure your local ComfyUI is switched on and running on the same computer. dsh-qwen-paint is a bridge between DeepSeek Harness and ComfyUI, so the two of them need to be awake at the same time. Once they are, open DeepSeek Harness, type a description, and the plugin will hand your request over to your own image engine.
+  </p>
+  <p style="margin: 0 0 0;">
+    If you are on Windows and have never run a download like this before, the simplest habit is to keep the downloaded file in a folder you will remember, such as your Downloads folder, and to open it from there each time.
+  </p>
 
-  <details class="about">
-    <summary data-t="about"></summary>
-    <p class="sub" style="margin-top:14px" id="stats"></p>
-    <table id="coltable"></table>
-    <p class="det" style="margin-top:14px" id="sources"></p>
-  </details>
-  <p class="foot" id="foot"></p>
-</div>
+  <h2 style="font-size: 1.55rem; color: #0f172a; margin: 44px 0 14px;">🖥️ Works With Your Graphics Card</h2>
+  <p style="margin: 0 0 18px;">
+    Image generation leans heavily on your graphics card, and no two computers are the same. This optimised release was specifically reworked so that more people can join in:
+  </p>
+  <ul style="padding-left: 22px; margin: 0;">
+    <li style="margin-bottom: 12px;"><strong>NVIDIA cards</strong> are the most common choice and are well supported out of the box.</li>
+    <li style="margin-bottom: 12px;"><strong>Intel Arc cards</strong> are supported through Intel's own graphics drivers.</li>
+    <li style="margin-bottom: 12px;"><strong>AMD cards</strong> work through ROCm, AMD's driver package for heavier graphics work.</li>
+  </ul>
+  <p style="margin: 18px 0 0;">
+    A more capable card simply finishes each picture sooner. A more modest card still works — it just asks you to be a little more patient between attempts.
+  </p>
 
-<script src="data/fadersrosten.js"></script>
-<script>
-const ARTS = window.FADERSROSTEN.a;
+  <h2 style="font-size: 1.55rem; color: #0f172a; margin: 44px 0 14px;">🔒 Your Images Never Leave Your Computer</h2>
+  <p style="margin: 0 0 18px;">
+    This is the part that matters most for many people. dsh-qwen-paint is written so that every connection is limited to <strong>127.0.0.1</strong>, which is the technical name for “this computer, right here”. In plain language: the plugin talks to your own machine and to nothing else.
+  </p>
+  <p style="margin: 0 0 0;">
+    That means no account creation, no usage limits set by a company, no monthly bill, and no worry that a private idea you typed is sitting on somebody else's server. Your pictures are files on your own drive, and you decide what happens to them next.
+  </p>
 
-// ---------- Språk ----------
-const LANGS = [["no","Norsk"],["sv","Svenska"],["fi","Suomi"],["en","English"]];
-const SRC = `<em>Fadersrösten</em> årg. 1–30 (1960–1989), innehållsförteckningar; Lauri Peltomaa, <em>Predikotextregister</em> (Alingsås 2003); <a href="https://prekensok.github.io/" target="_blank" rel="noopener">Læstadiansk prekensøk</a>.`;
-const T = {
-  no: {
-    title:"Søk i Fadersrøsten", h1:"Finn en preken eller artikkel",
-    sub:"Søk etter bibeltekster, titler, forfattere og anledninger i tidsskriftet Fadersrøsten (svensk: Fadersrösten), årgang 1–30, 1960–1989.",
-    ph:"Søk: bibeltekst, tittel, forfatter, år, «1975 nr 2» …",
-    allA:"Alle forfattere", allY:"Alle årganger", decades:"Tiår", years:"Årganger", unsigned:"Uten signatur",
-    ex:"Eksempler:", examples:["Luk 15","Matt 5:1-12","Rom 10","påske","nattverd","Luther","Försoning","1975 nr 2","RRS 47"],
-    note:"Søket dekker innholdsfortegnelsene, ikke hele artikkelteksten. Titlene står slik de er trykt. Prøv også å velge en forfatter eller årgang.",
-    count:n => `${n} treff`, more:n => `Vis flere (${n})`,
-    none:q => `Ingen treff for «${q}». Prøv en bibeltekst (f.eks. «Luk 15»), et ord fra en svensk tittel («nåd», «synd»), en forfatter («Bunyan»), et år («1975») eller samling + nummer («RRS 47»).`,
-    issue:(g,y,n) => `Årgang ${g} · ${y} nr ${n}`, page:"s.",
-    printed:"Bibeltekst i tittelen", pelt:"Bibeltekster ifølge Peltomaa", occ:"Søndag eller anledning", also:"Finnes også i",
-    differs:"Peltomaa oppgir en annen bibeltekst enn den som er trykt i tittelen. Begge er med i søket.",
-    abridged:"Forkortet i Fadersrösten, ifølge Peltomaa.",
-    flagOnly:"Finnes i samlingen (nummer ikke oppgitt)",
-    open:"Åpne i Læstadiansk prekensøk",
-    about:"Om registeret og kildene", hAbbr:"Forkortelse", hCol:"Samling", hLang:"Språk",
-    stats:(a,b,p) => `Registeret har ${a} artikler. ${b} av dem har en trykt bibelhenvisning, og ${p} prekener av Læstadius er koblet til Peltomaas register og andre prekensamlinger.`,
-    sources:`Kilder: ${SRC} Innholdsfortegnelsene er transkribert fra fotografier (august 2026). Peltomaa-koblingen bygger på FR-kolonnen hans (år:nummer, f.eks. 84:2) og på bibelteksten. Søndagsnavn vises på norsk, stikkord på svensk, slik de står i kildene.`,
-    lang:{no:"norsk",sv:"svensk",fi:"finsk",se:"nordsamisk",smj:"lulesamisk",de:"tysk",en:"engelsk"}
-  },
-  sv: {
-    title:"Sök i Fadersrösten", h1:"Hitta en predikan eller artikel",
-    sub:"Sök efter bibeltexter, titlar, författare och tillfällen i tidskriften Fadersrösten, årgång 1–30, 1960–1989.",
-    ph:"Sök: bibeltext, titel, författare, år, «1975 nr 2» …",
-    allA:"Alla författare", allY:"Alla årgångar", decades:"Årtionden", years:"Årgångar", unsigned:"Utan signatur",
-    ex:"Exempel:", examples:["Luk 15","Matt 5:1-12","Rom 10","påsk","nattvard","Luther","Försoning","1975 nr 2","RRS 47"],
-    note:"Sökningen omfattar innehållsförteckningarna, inte artiklarnas fulla text. Titlarna återges som de är tryckta. Prova också att välja en författare eller årgång.",
-    count:n => `${n} ${n === 1 ? "träff" : "träffar"}`, more:n => `Visa fler (${n})`,
-    none:q => `Inga träffar för «${q}». Prova en bibeltext (t.ex. «Luk 15»), ett ord ur en titel («nåd», «synd»), en författare («Bunyan»), ett år («1975») eller samling + nummer («RRS 47»).`,
-    issue:(g,y,n) => `Årgång ${g} · ${y} nr ${n}`, page:"s.",
-    printed:"Bibeltext i titeln", pelt:"Bibeltexter enligt Peltomaa", occ:"Söndag eller tillfälle", also:"Finns även i",
-    differs:"Peltomaa anger en annan bibeltext än den som är tryckt i titeln. Båda ingår i sökningen.",
-    abridged:"Förkortad i Fadersrösten, enligt Peltomaa.",
-    flagOnly:"Finns i samlingen (numret anges inte)",
-    open:"Öppna i Laestadiansk predikosök",
-    about:"Om registret och källorna", hAbbr:"Förkortning", hCol:"Samling", hLang:"Språk",
-    stats:(a,b,p) => `Registret har ${a} artiklar. ${b} av dem har en tryckt bibelhänvisning, och ${p} predikningar av Laestadius är kopplade till Peltomaas register och andra predikosamlingar.`,
-    sources:`Källor: ${SRC} Innehållsförteckningarna är transkriberade från fotografier (augusti 2026). Kopplingen till Peltomaa bygger på hans FR-kolumn (år:nummer, t.ex. 84:2) och på bibeltexten. Söndagarnas namn visas på norska och sökorden på svenska, så som de står i källorna.`,
-    lang:{no:"norska",sv:"svenska",fi:"finska",se:"nordsamiska",smj:"lulesamiska",de:"tyska",en:"engelska"}
-  },
-  fi: {
-    title:"Isän Ääni -haku", h1:"Etsi saarna tai artikkeli",
-    sub:"Hae raamatunkohtia, otsikoita, kirjoittajia ja tilaisuuksia Isän Ääni -lehdestä (ruotsiksi Fadersrösten), vuosikerrat 1–30, 1960–1989.",
-    ph:"Hae: raamatunkohta, otsikko, kirjoittaja, vuosi, «1975 nr 2» …",
-    allA:"Kaikki kirjoittajat", allY:"Kaikki vuosikerrat", decades:"Vuosikymmenet", years:"Vuosikerrat", unsigned:"Ilman nimeä",
-    ex:"Esimerkkejä:", examples:["Luuk. 15","Matt. 5:1-12","Room. 10","pääsiäinen","ehtoollinen","Luther","1975 nr 2","RRS 47"],
-    note:"Haku kattaa sisällysluettelot, ei artikkelien koko tekstiä. Otsikot ovat painoasussaan. Kokeile myös valita kirjoittaja tai vuosikerta.",
-    count:n => `${n} ${n === 1 ? "osuma" : "osumaa"}`, more:n => `Näytä lisää (${n})`,
-    none:q => `Ei osumia haulle «${q}». Kokeile raamatunkohtaa (esim. «Luuk. 15»), ruotsinkielistä otsikon sanaa («nåd», «synd»), kirjoittajaa («Bunyan»), vuotta («1975») tai kokoelmaa ja numeroa («RRS 47»).`,
-    issue:(g,y,n) => `Vuosikerta ${g} · ${y} nro ${n}`, page:"s.",
-    printed:"Raamatunkohta otsikossa", pelt:"Raamatunkohdat Peltomaan mukaan", occ:"Pyhäpäivä tai tilaisuus", also:"Myös kokoelmissa",
-    differs:"Peltomaa ilmoittaa eri raamatunkohdan kuin otsikossa on painettu. Molemmat ovat mukana haussa.",
-    abridged:"Lyhennetty Isän Ääni -lehdessä Peltomaan mukaan.",
-    flagOnly:"Kokoelmassa (numeroa ei ole ilmoitettu)",
-    open:"Avaa Laestadiuksen saarnahaussa",
-    about:"Tietoa rekisteristä ja lähteistä", hAbbr:"Lyhenne", hCol:"Kokoelma", hLang:"Kieli",
-    stats:(a,b,p) => `Rekisterissä on ${a} artikkelia. Niistä ${b} sisältää painetun raamatunviitteen, ja ${p} Laestadiuksen saarnaa on yhdistetty Peltomaan rekisteriin ja muihin saarnakokoelmiin.`,
-    sources:`Lähteet: ${SRC} Sisällysluettelot on litteroitu valokuvista (elokuu 2026). Yhdistäminen Peltomaan rekisteriin perustuu hänen FR-sarakkeeseensa (vuosi:numero, esim. 84:2) ja raamatunkohtaan. Pyhäpäivien nimet näytetään norjaksi ja hakusanat ruotsiksi, kuten lähteissä.`,
-    lang:{no:"norja",sv:"ruotsi",fi:"suomi",se:"pohjoissaame",smj:"luulajansaame",de:"saksa",en:"englanti"}
-  },
-  en: {
-    title:"The Father’s Voice Search", h1:"Find a sermon or article",
-    sub:"Search Bible texts, titles, authors and occasions in the journal The Father’s Voice (Swedish: Fadersrösten), volumes 1–30, 1960–1989.",
-    ph:"Search: Bible text, title, author, year, “1975 nr 2” …",
-    allA:"All authors", allY:"All volumes", decades:"Decades", years:"Volumes", unsigned:"Unsigned",
-    ex:"Examples:", examples:["Luke 15","Matt 5:1-12","Rom 10","Easter","communion","Luther","1975 nr 2","RRS 47"],
-    note:"The search covers the tables of contents, not the full text of the articles. Titles are shown as printed, in Swedish. You can also try choosing an author or volume.",
-    count:n => `${n} ${n === 1 ? "result" : "results"}`, more:n => `Show more (${n})`,
-    none:q => `No results for “${q}”. Try a Bible text (e.g. “Luke 15”), a Swedish title word (“nåd”, “synd”), an author (“Bunyan”), a year (“1975”) or collection + number (“RRS 47”).`,
-    issue:(g,y,n) => `Volume ${g} · ${y} no. ${n}`, page:"p.",
-    printed:"Bible text in the title", pelt:"Bible texts according to Peltomaa", occ:"Sunday or occasion", also:"Also found in",
-    differs:"Peltomaa gives a different Bible text from the one printed in the title. Both are searchable.",
-    abridged:"Abridged in The Father’s Voice, according to Peltomaa.",
-    flagOnly:"In this collection (number not given)",
-    open:"Open in Laestadius Sermon Search",
-    about:"About the register and sources", hAbbr:"Abbreviation", hCol:"Collection", hLang:"Language",
-    stats:(a,b,p) => `The register has ${a} articles. ${b} of them have a printed Bible reference, and ${p} sermons by Laestadius are linked to Peltomaa’s register and other sermon collections.`,
-    sources:`Sources: ${SRC} The tables of contents were transcribed from photographs (August 2026). The link to Peltomaa is based on his FR column (year:number, e.g. 84:2) and on the Bible text. Sunday names are shown in Norwegian and keywords in Swedish, as in the sources.`,
-    lang:{no:"Norwegian",sv:"Swedish",fi:"Finnish",se:"Northern Sami",smj:"Lule Sami",de:"German",en:"English"}
-  }
-};
-// Krysslenke nederst på siden, med navnet den andre appen bruker på hvert språk
-const OTHER = {no:["Se også:","Læstadiansk prekensøk"],sv:["Se även:","Laestadiansk predikosök"],fi:["Katso myös:","Laestadiuksen saarnahaku"],en:["See also:","Laestadius Sermon Search"]};
-let L = "no";
-try {
-  const p = new URLSearchParams(location.search).get("lang");
-  L = T[p] ? p : (T[localStorage.getItem("lang")] ? localStorage.getItem("lang") : "no");
-} catch(e){}
+  <h2 style="font-size: 1.55rem; color: #0f172a; margin: 44px 0 14px;">🧰 What You Need</h2>
+  <ul style="padding-left: 22px; margin: 0;">
+    <li style="margin-bottom: 12px;">A Windows computer (Linux is also supported, and macOS is tracked by the project).</li>
+    <li style="margin-bottom: 12px;">DeepSeek Harness installed and working, since dsh-qwen-paint plugs into it.</li>
+    <li style="margin-bottom: 12px;">ComfyUI installed and running locally on the same machine.</li>
+    <li style="margin-bottom: 12px;">The Qwen-Image 2.1 model available inside your ComfyUI setup.</li>
+    <li style="margin-bottom: 12px;">A graphics card from NVIDIA, Intel or AMD, with current drivers installed.</li>
+    <li style="margin-bottom: 0;">Enough free disk space for the model files and for the pictures you create.</li>
+  </ul>
 
-const esc = s => String(s).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
-const fold = s => String(s||"").toLowerCase().replace(/æ|ae/g,"ä").replace(/ø/g,"ö").replace(/[.,:;()\-–—!?«»“”"'’]/g," ").replace(/\s+/g," ").trim();
-const idnorm = s => String(s||"").toLowerCase().replace(/[\s.?\-]/g,"");
+  <h2 style="font-size: 1.55rem; color: #0f172a; margin: 44px 0 14px;">🙋 Frequently Asked Questions</h2>
 
-// Ord på norsk, finsk og engelsk -> ordstammer i de svenske titlene.
-// Søkeordet må være lik nøkkelen eller begynne med den (bare nøkler på 5+ tegn).
-const SYN = Object.entries({
-  "påske":"påsk","easter":"påsk","pääsiäi":"påsk",
-  "julen":"jul","christmas":"jul","joulu":"jul",
-  "pinse":"pingst","pentecost":"pingst","whitsun":"pingst","helluntai":"pingst",
-  "adventti":"advent",
-  "trefold":"trefald","trinity":"trefald","kolminaisuu":"trefald",
-  "åpenbaring":"trettondag","epiphany":"trettondag","loppiai":"trettondag",
-  "langfredag":"långfredag","good friday":"långfredag","pitkäperjantai":"långfredag",
-  "palmesøndag":"palmsöndag","palmusunnuntai":"palmsöndag",
-  "himmelfart":"himmelsfärd","ascension":"himmelsfärd","helatorstai":"himmelsfärd",
-  "faste":"fast","nyttår":"nyår","uusivuosi":"nyår",
-  "bønnedag":"böndag","rukouspäivä":"böndag",
-  "preken":"predikan","prekener":"predikan","sermon":"predikan","saarna":"predikan",
-  "skriftetale":"skriftetal","gravtale":"griftetal","begravelse":"griftetal","funeral":"griftetal",
-  "nattverd":"nattvard","communion":"nattvard","ehtoollinen":"nattvard",
-  "dåp":"dop","dåpen":"dop","baptism":"dop","kaste":"dop",
-  "nåde":"nåd","grace":"nåd","armo":"nåd",
-  "tro":"tro","faith":"tro","usko":"tro",
-  "sin":"synd","sins":"synd","synder":"synd","synti":"synd",
-  "omvendelse":"omvänd","conversion":"omvänd","kääntymys":"omvänd",
-  "bot":"bättring","repentance":"bättring","parannus":"bättring",
-  "lov":"lag","loven":"lag","law":"lag","laki":"lag",
-  "frelse":"fräls","frelser":"fräls","savior":"fräls","saviour":"fräls",
-  "rettferdig":"rättfärdig","righteous":"rättfärdig","vanhurskau":"rättfärdig",
-  "hjerte":"hjärt","heart":"hjärt","sydän":"hjärt",
-  "kjærlighet":"kärlek","love":"kärlek","rakkaus":"kärlek",
-  "helliggjør":"helgel","sanctific":"helgel","pyhityks":"helgel",
-  "sannhet":"sanning","truth":"sanning","totuus":"sanning",
-  "lys":"ljus","light":"ljus","valo":"ljus",
-  "verden":"värld","world":"värld","maailma":"värld",
-  "helligånd":"helige ande","holy spirit":"helige ande","pyhä henki":"helige ande",
-  "vekkelse":"väckelse","revival":"väckelse","herätys":"väckelse",
-  "forsoning":"försoning","atonement":"försoning","sovitus":"försoning",
-  "pånyttfødelse":"pånyttföd","rebirth":"pånyttföd","uudestisynty":"pånyttföd"
-}).map(([k, v]) => [fold(k), fold(v)]);
-const synFor = w => SYN.filter(([k]) => w === k || (k.length >= 5 && w.startsWith(k))).map(([, v]) => v);
+  <h3 style="font-size: 1.12rem; color: #1e293b; margin: 22px 0 8px;">Do I need to pay for anything?</h3>
+  <p style="margin: 0 0 18px;">No. The plugin runs on your own hardware, so there is no subscription tied to it and no per-image charge.</p>
 
-// [nøkkel, forkortelse, navn, språk, enhet] – som i prekensøk (uten Fadersrösten selv)
-const COLS = [
-  ["P1","PI","Postille I (Biblioteca Laestadiana 2026)","no","nr"],
-  ["RRS","RRS","Prekensamling I–III, R. Rustholkarhu-Sund","no","nr"],
-  ["BR","Br","Kirkepostille, A. Brune","no","nr"],
-  ["AB","Bø","Tredje Postille, A. Børresen","no","nr"],
-  ["SI","Saarnat","Saarnat I–III","fi","nr"],
-  ["SP","Samlade","Samlade predikningar I–VI","sv","nr"],
-  ["PI","Panula","Postilla I–II, A.K. Panula","fi","page"],
-  ["EH","Häkli","Saarnoja, E. Häkli","fi","page"],
-  ["P","Pieni","Pieni Saarnakokoelma","fi","nr"],
-  ["SW","SW","Postilla, S. Wettainen","sv","nr"],
-  ["JH","JH","Kyrkopostilla, J.F. Hellman","sv","nr"],
-  ["PB","PB","Evangeliepostilla, P. Boreman","sv","nr"],
-  ["JP","JP","Predikningar, J. Pietiläinen","sv","nr"],
-  ["PW","PW","Poasttal, P. Wigelius","se","page"],
-  ["AK","AK","Sárne, A. Kintel","smj","page"],
-  ["D","D","Predikten, J. Heinonen","de","nr"],
-  ["HP","HP","House Postilla","en","page"],
-  ["NP","NP","New Postilla","en","nr"],
-  ["III","III","Third Postilla","en","nr"],
-  ["IV","IV","Fourth Postilla","en","nr"],
-  ["V","V","Fifth Postilla","en","nr"],
-  ["PAN","Panula nr","Postilla, A.K. Panula (nr.)","fi","nr"]
-];
-const COL = Object.fromEntries(COLS.map(c => [c[0], c]));
-const ALIAS = {};
-COLS.forEach(c => { ALIAS[c[1].toLowerCase()] = c[0]; ALIAS[c[0].toLowerCase()] = c[0]; });
-Object.assign(ALIAS, {"p1":"P1","postille":"P1","brune":"BR","børresen":"AB","borresen":"AB","bo":"AB","saarnat":"SI","saa":"SI","si":"SI","samlade":"SP","sp":"SP","panula":"PI","häkli":"EH","hakli":"EH","eh":"EH","wigelius":"PW","heinonen":"D","hellman":"JH","boreman":"PB","pietiläinen":"JP","sárne":"AK","sarne":"AK","kintel":"AK","pi":"P1"});
+  <h3 style="font-size: 1.12rem; color: #1e293b; margin: 22px 0 8px;">Will my prompts be sent to the internet?</h3>
+  <p style="margin: 0 0 18px;">No. Every connection is confined to 127.0.0.1, which is your own computer. Nothing is uploaded anywhere.</p>
 
-// ---------- Bibelbøker ----------
-const BOOK = {
-  "mos":"mos","moos":"mos","sam":"sam","kon":"kong","kong":"kong","kung":"kong","kun":"kong","kgs":"kong","kings":"kong",
-  "krön":"krøn","krøn":"krøn","aik":"krøn","chr":"krøn","job":"job",
-  "ps":"sal","sal":"sal","salme":"sal","salm":"sal","psalm":"sal",
-  "ords":"ordsp","ordsp":"ordsp","ordspr":"ordsp","sananl":"ordsp","prov":"ordsp",
-  "pred":"fork","fork":"fork","saarn":"fork","eccl":"fork","höga":"høys","høys":"høys","laul":"høys","song":"høys",
-  "jes":"jes","es":"jes","isa":"jes","jer":"jer","klag":"klag","valit":"klag","lam":"klag",
-  "hes":"esek","esek":"esek","ezek":"esek","dan":"dan","hos":"hos","hoos":"hos","joel":"joel",
-  "am":"amos","amos":"amos","aam":"amos","mika":"mika","miika":"mika","mic":"mika","mal":"mal","sak":"sak","zech":"sak","hab":"hab",
-  "vish":"visd","visd":"visd","vis":"visd","viis":"visd","wis":"visd","tob":"tob","tobit":"tob","syr":"sir","syrak":"sir","sir":"sir",
-  "matt":"matt","mark":"mark","luk":"luk","luuk":"luk","luke":"luk","joh":"joh","john":"joh",
-  "apg":"apg","apgj":"apg","ap":"apg","apt":"apg","acts":"apg",
-  "rom":"rom","room":"rom","kor":"kor","cor":"kor","gal":"gal","ef":"ef","eph":"ef","fil":"fil","phil":"fil","kol":"kol","col":"kol",
-  "tes":"tess","tess":"tess","thess":"tess","tim":"tim","tit":"tit","titus":"tit","filem":"filem","phlm":"filem",
-  "hebr":"hebr","heb":"hebr","hepr":"hebr","jak":"jak","jaak":"jak","jas":"jak",
-  "petr":"pet","pet":"pet","piet":"pet","jud":"jud","juud":"jud","jude":"jud",
-  "upp":"åp","uppb":"åp","åp":"åp","åpb":"åp","ilm":"åp","rev":"åp"
-};
-const MOSES = {"gen":"1","exod":"2","ex":"2","lev":"3","num":"4","deut":"5"};
-const NUMBERED = new Set(["mos","sam","kong","krøn","kor","tess","tim","pet"]);
-const ONE_CHAPTER = new Set(["jud","filem","2joh","3joh"]);
-const SHOW = {
-  no:{mos:"Mos",kong:"Kong",krøn:"Krøn",sal:"Sal",ordsp:"Ordsp",fork:"Fork",høys:"Høys",esek:"Esek",amos:"Am",visd:"Visd",sir:"Sir",pet:"Pet",åp:"Åp"},
-  sv:{mos:"Mos",kong:"Kung",krøn:"Krön",sal:"Ps",ordsp:"Ords",fork:"Pred",høys:"Höga v",esek:"Hes",amos:"Am",visd:"Vish",sir:"Syr",pet:"Petr",åp:"Upp"},
-  fi:{mos:"Moos",kong:"Kun",krøn:"Aik",sal:"Ps",ordsp:"Sananl",fork:"Saarn",høys:"Laul",klag:"Valit",esek:"Hes",hos:"Hoos",amos:"Aam",mika:"Miika",visd:"Viis",
-      luk:"Luuk",apg:"Ap. t.",rom:"Room",hebr:"Hepr",jak:"Jaak",pet:"Piet",jud:"Juud",åp:"Ilm"},
-  en:{kong:"Kgs",krøn:"Chr",sal:"Ps",ordsp:"Prov",fork:"Eccl",høys:"Song",jes:"Isa",klag:"Lam",esek:"Ezek",amos:"Amos",mika:"Mic",sak:"Zech",visd:"Wis",
-      luk:"Luke",joh:"John",apg:"Acts",kor:"Cor",ef:"Eph",fil:"Phil",kol:"Col",tess:"Thess",tit:"Titus",filem:"Phlm",hebr:"Heb",jak:"Jas",jud:"Jude",åp:"Rev"}
-};
-const EN_MOSES = ["","Gen","Exod","Lev","Num","Deut"];
-const BOOKRE = /^\s*([1-5])?\s*\.?\s*([A-Za-zÅÄÖØÆåäöøæ]+)\.?\s*(.*)$/;
+  <h3 style="font-size: 1.12rem; color: #1e293b; margin: 22px 0 8px;">Why does nothing happen when I ask for a picture?</h3>
+  <p style="margin: 0 0 18px;">The most common reason is that ComfyUI is not running yet, or the Qwen-Image 2.1 model has not been set up inside it. Start ComfyUI first, then try again from DeepSeek Harness.</p>
 
-function parseRef(s){
-  const m = String(s).match(BOOKRE);
-  if (!m) return null;
-  const w = m[2].toLowerCase();
-  if (MOSES[w] && !m[1]) return {num:MOSES[w], book:"mos", rest:m[3]};
-  const b = BOOK[w];
-  return b ? {num:m[1] || "", book:b, rest:m[3]} : null;
-}
-function showRef(t){
-  const r = parseRef(t);
-  if (!r) return t;
-  const sep = L === "no" ? "," : ":";
-  const rest = r.rest.trim().replace(/^(\d+)\s*[:,]\s*/, "$1" + sep);
-  const base = r.book.charAt(0).toUpperCase() + r.book.slice(1);
-  if (L === "en" && r.book === "mos") return EN_MOSES[+r.num] + " " + rest;
-  const name = (SHOW[L][r.book]) || base;
-  const num = r.num ? (L === "fi" ? r.num + ". " : r.num + " ") : "";
-  return (num + name + " " + rest).trim();
-}
+  <h3 style="font-size: 1.12rem; color: #1e293b; margin: 22px 0 8px;">My pictures take a long time.</h3>
+  <p style="margin: 0 0 18px;">Image creation is heavy work. Smaller or older graphics cards take longer, and the first picture after starting up is usually the slowest of all.</p>
 
-// "Luk 15", "Matt 5:1-12", "Matt 11,2", "3 Joh 11" -> {num, book, c, v1, v2}
-function parseBibleQuery(s){
-  const r = parseRef(s);
-  if (!r) return null;
-  const rest = r.rest.trim();
-  if (rest && !/^\d[\d\s:,.\-–—]*(ff?)?$/.test(rest)) return null;
-  const q = {num:r.num, book:r.book, c:null, v1:null, v2:null};
-  if (!rest) return q;
-  const m = rest.match(/^(\d+)(?:\s*[:,.\s]\s*(\d+)(?:\s*[-–—]\s*(\d+))?)?/);
-  q.c = +m[1];
-  if (m[2]) { q.v1 = +m[2]; q.v2 = m[3] ? +m[3] : q.v1; }
-  if (!m[2] && ONE_CHAPTER.has(r.num + r.book)) { q.v1 = q.v2 = q.c; q.c = 1; }
-  return q;
-}
-function refScore(refs, q){
-  let best = 0;
-  for (const [k, c, v1, v2] of refs || []){
-    const same = q.num ? k === q.num + q.book : (k === q.book || (NUMBERED.has(q.book) && k.replace(/^\d/, "") === q.book));
-    if (!same) continue;
-    let s = 0;
-    if (q.c === null) s = 45;
-    else if (c === q.c){
-      if (q.v1 === null) s = 50;
-      else if (!v1) s = 40;
-      else if (q.v1 <= v2 && q.v2 >= v1) s = (q.v1 === v1 && q.v2 === v2) ? 62 : 60;
-    }
-    if (s > best) best = s;
-  }
-  return best;
-}
+  <h3 style="font-size: 1.12rem; color: #1e293b; margin: 22px 0 8px;">Can I use it on a laptop?</h3>
+  <p style="margin: 0 0 18px;">Yes, as long as the laptop has a compatible graphics card. Built-in laptop graphics will be slower than a desktop card, but the steps are the same.</p>
 
-// ---------- Indeks ----------
-const authorKey = a => (a.a || "").replace(/\s*\(.*\)\s*$/, "");
-const INDEX = ARTS.map((a, i) => {
-  const p = a.p || [];
-  const texts = [...new Set(p.flatMap(x => x.t))];
-  const kw = [...new Set(p.flatMap(x => x.k).filter(Boolean))];
-  const days = [...new Set(p.flatMap(x => x.d))];
-  const x = {};
-  p.forEach(e => Object.entries(e.x).forEach(([c, v]) => { x[c] = [...new Set([...(x[c] || []), ...v])]; }));
-  return {
-    i, a, texts, kw, days, x,
-    pb: p.flatMap(e => e.b),
-    author: authorKey(a),
-    fTitle: fold(a.t),
-    fAuthor: fold(a.a),
-    words: fold([a.t, a.a, a.i, a.r, ...texts, ...kw, ...days].join(" ")),
-    initials: a.i.split(",").map(s => fold(s).replace(/\s/g, "")),
-    ids: Object.entries(x).flatMap(([c, v]) => v.map(n => [c, idnorm(n)]))
-  };
-});
-const LINKED = INDEX.filter(it => it.a.p).length;
-const WITH_REF = INDEX.filter(it => it.a.r).length;
+  <h3 style="font-size: 1.12rem; color: #1e293b; margin: 22px 0 8px;">Who made this?</h3>
+  <p style="margin: 0 0 0;">The original plugin was created by <strong>@奇迹与你</strong>. This optimised edition, with its faster performance, wider graphics card support and cross-platform work, was prepared by <strong>@yanfei0725</strong>.</p>
 
-const $q = document.getElementById("q"), $fa = document.getElementById("fa"), $fy = document.getElementById("fy"),
-      $out = document.getElementById("out"), $count = document.getElementById("count");
+  <div style="margin-top: 48px; padding: 26px; background: #ffffff; border: 1px solid #e2e8f0; border-radius: 16px; box-shadow: 0 4px 14px rgba(15, 23, 42, 0.06); text-align: center;">
+    <p style="margin: 0 0 16px; font-weight: 600; color: #0f172a; font-size: 1.05rem;">Ready to make your first picture?</p>
+    <a href="https://github.com/TeacherEvaHung/dsh-qwen-paint"
+       style="display: inline-block; background: linear-gradient(135deg, #7c3aed 0%, #0ea5e9 100%); color: #ffffff; text-decoration: none; font-size: 1rem; font-weight: 700; padding: 15px 34px; border-radius: 12px; box-shadow: 0 8px 18px rgba(79, 70, 229, 0.28);">
+      ⬇️ Visit the download page
+    </a>
+  </div>
 
-function issueQuery(q){
-  let m = q.match(/^(?:fr\s+)?(\d\d):([1-4])$/i);
-  if (m) return {y:1900 + +m[1], n:+m[2]};
-  m = q.match(/^(?:fr\s+)?(19[6-8]\d)(?:\s*(?:[:,\/]|nr\.?|no\.?|n:o|nro)\s*|\s+)([1-4])$/i);
-  if (m) return {y:+m[1], n:+m[2]};
-  m = q.match(/^(?:årg(?:ang|ång)?\.?|vol(?:ume)?\.?|vuosikerta)\s*(\d{1,2})(?:\s*(?:nr\.?|no\.?|nro|:)\s*([1-4]))?$/i);
-  if (m) return {g:+m[1], n:m[2] ? +m[2] : null};
-  m = q.match(/^(19[6-8]\d)$/);
-  if (m) return {y:+m[1], n:null};
-  return null;
-}
+  <p style="margin: 34px 0 0; font-size: 0.88rem; color: #94a3b8; text-align: center;">
+    dsh-qwen-paint · Local image generation for DeepSeek Harness · Original by @奇迹与你 · Optimised edition by @yanfei0725
+  </p>
 
-function parseQuery(q){
-  let col = null, rest = q.trim();
-  const m = rest.match(/^(\p{L}+(?: nr)?)\.?\s+(\S.*)$/u);
-  if (m && ALIAS[m[1].toLowerCase()] && /\d/.test(m[2]) && !parseBibleQuery(rest)) { col = ALIAS[m[1].toLowerCase()]; rest = m[2]; }
-  return {col, rest};
-}
+</main>
 
-function passes(it){
-  const fa = $fa.value, fy = $fy.value;
-  if (fa === "__none" ? it.author : (fa && it.author !== fa)) return false;
-  if (fy){
-    const v = +fy.slice(1);
-    if (fy[0] === "y" ? it.a.y !== v : Math.floor(it.a.y / 10) !== v) return false;
-  }
-  return true;
-}
-
-function search(q){
-  const raw = q.trim();
-  const {col, rest} = parseQuery(raw);
-  const issue = col ? null : issueQuery(raw);
-  const id = idnorm(rest), isId = /^s?\d+[a-c]?$/i.test(id);
-  const bq = col ? null : parseBibleQuery(rest);
-  const fq = fold(rest), compact = fq.replace(/\s/g, "");
-  const useWords = !col && fq.length > 1 && !(isId && id.length < 4) && !(bq && bq.c !== null) && !(issue && issue.n);
-  const groups = useWords ? fq.split(" ").filter(w => w.length > 1).map(w => [w, ...synFor(w)]) : [];
-  const allIn = hay => groups.length > 0 && groups.every(g => g.some(n => hay.includes(n)));
-  const res = [];
-  for (const it of INDEX){
-    if (!passes(it)) continue;
-    let score = 0; const m = {cols:new Set(), printed:false, pelt:false};
-    if (issue){
-      if ((issue.y ? it.a.y === issue.y : it.a.g === issue.g) && (!issue.n || it.a.n === issue.n)) score = 100;
-    }
-    if (isId || col){
-      for (const [c, n] of it.ids){
-        if ((!col || c === col || (col === "PI" && c === "PAN")) && (n === id || n === "s" + id)) { score = Math.max(score, 90); m.cols.add(c); }
-      }
-    }
-    if (bq){
-      const a = refScore(it.a.b, bq), b = refScore(it.pb, bq);
-      if (a) m.printed = true;
-      if (b) m.pelt = true;
-      score = Math.max(score, a ? a + 2 : 0, b);
-    }
-    if (useWords){
-      if (it.initials.includes(compact)) score = Math.max(score, 90);
-      if (allIn(it.fAuthor)) score = Math.max(score, 34);
-      if (it.fTitle.includes(fq)) score = Math.max(score, 36);
-      else if (allIn(it.fTitle)) score = Math.max(score, 30);
-      else if (allIn(it.words)) score = Math.max(score, 20);
-    }
-    if (score) res.push({it, score, m});
-  }
-  res.sort((a, b) => b.score - a.score || a.it.i - b.it.i);
-  return {res, needles: groups.flat()};
-}
-
-function hl(text, needles){
-  const ws = (needles || []).filter(w => w.length > 1 && !/^\d+$/.test(w)).sort((a, b) => b.length - a.length);
-  if (!ws.length) return esc(text);
-  const pattern = w => w.replace(/[.*+?^${}()|[\]\\]/g, "\\$&").replace(/ä/g, "(?:ä|æ|ae)").replace(/ö/g, "[öø]").replace(/ /g, "\\s+");
-  const parts = String(text).split(new RegExp("(" + ws.map(pattern).join("|") + ")", "ig"));
-  return parts.map((p, i) => i % 2 ? `<mark>${esc(p)}</mark>` : esc(p)).join("");
-}
-
-function fmtRef(c, n){
-  const page = T[L].page;
-  if (/^s\.? ?\d/.test(n)) return page + " " + n.replace(/^s\.? ?/, "");
-  if (COL[c][4] === "page") return page + " " + n;
-  return n.replace(/^(\d+) ?([A-C])$/, "$1 $2");
-}
-
-function authorText(a, t){
-  if (!a.a) return t.unsigned;
-  if (a.a.includes("(")) return a.a.replace(/[()]/g, "");
-  return a.a;
-}
-
-function card(r, needles){
-  const {it, m} = r, a = it.a, t = T[L], p = a.p || [];
-  const rows = [];
-  if (a.r){
-    const v = esc(a.r);
-    rows.push(`<tr><th>${esc(t.printed)}</th><td class="ref">${m.printed ? `<mark>${v}</mark>` : v}</td></tr>`);
-  }
-  if (it.texts.length){
-    const v = esc(it.texts.map(showRef).join(" · "));
-    const notes = [];
-    if (a.r && p.some(e => !e.c)) notes.push(t.differs);
-    if (p.some(e => e.s)) notes.push(t.abridged);
-    rows.push(`<tr><th>${esc(t.pelt)}</th><td class="ref">${m.pelt ? `<mark>${v}</mark>` : v}${notes.map(n => `<span class="det">${esc(n)}</span>`).join("")}</td></tr>`);
-  }
-  if (it.days.length) rows.push(`<tr><th>${esc(t.occ)}</th><td>${hl(it.days.join(" · "), needles)}</td></tr>`);
-  COLS.filter(c => it.x[c[0]] !== undefined).forEach(c => {
-    const vals = it.x[c[0]];
-    const cell = vals.length
-      ? vals.map(n => { const v = esc(fmtRef(c[0], n)); return m.cols.has(c[0]) && idnorm(n).replace(/^s/, "") === idnorm(parseQuery($q.value).rest).replace(/^s/, "") ? `<mark>${v}</mark>` : v; }).join(", ")
-      : `<span class="det">${esc(t.flagOnly)}</span>`;
-    rows.push(`<tr><th>${esc(c[2])} <span class="abbr">${esc(c[1])}</span> <span class="lang">${t.lang[c[3]]}</span></th><td class="ref">${cell}</td></tr>`);
-  });
-  const frKey = p.length ? p[0].f : "";
-  const link = frKey ? `<p class="hint"><a href="https://prekensok.github.io/${L === "no" ? "" : "?lang=" + L}#${encodeURIComponent("FR " + frKey)}" target="_blank" rel="noopener">${esc(t.open)} →</a></p>` : "";
-  const initials = a.a && !a.a.includes("(") && a.i && a.i !== a.a ? ` <span class="abbr">${esc(a.i)}</span>` : "";
-  return `<div class="card">
-    <div class="texts">${hl(a.t, needles)}</div>
-    <div class="days">${hl(authorText(a, t), needles)}${initials} · ${esc(t.issue(a.g, a.y, a.n))} · ${t.page} ${esc(a.s)}</div>
-    ${it.kw.length ? `<div class="kw">«${hl(it.kw.join(" · "), needles)}»</div>` : ""}
-    ${rows.length ? `<table>${rows.join("")}</table>` : ""}${link}</div>`;
-}
-
-let LIMIT = 40;
-function run(){
-  const q = $q.value, t = T[L];
-  let res, needles;
-  if (!q.trim()){
-    if (!$fa.value && !$fy.value){
-      $count.textContent = "";
-      $out.innerHTML = ""; saveUrl(); return;
-    }
-    res = INDEX.filter(passes).map(it => ({it, score:1, m:{cols:new Set()}})); needles = [];
-  } else ({res, needles} = search(q));
-  $count.textContent = res.length ? t.count(res.length) : "";
-  $out.innerHTML = res.length
-    ? res.slice(0, LIMIT).map(r => card(r, needles)).join("") + (res.length > LIMIT ? `<button class="more" id="more">${t.more(res.length - LIMIT)}</button>` : "")
-    : `<div class="empty">${esc(t.none(q || "–"))}</div>`;
-  const more = document.getElementById("more");
-  if (more) more.onclick = () => { LIMIT += 40; run(); };
-  saveUrl();
-}
-
-function saveUrl(){
-  const q = $q.value.trim();
-  const url = location.pathname + (L === "no" ? "" : "?lang=" + L) + (q ? "#" + encodeURIComponent(q) : "");
-  try { history.replaceState(null, "", url); } catch(e){}
-}
-
-function fillFilters(t){
-  const a = $fa.value, y = $fy.value;
-  const counts = {};
-  INDEX.forEach(it => { if (it.author) counts[it.author] = (counts[it.author] || 0) + 1; });
-  const unsigned = INDEX.filter(it => !it.author).length;
-  const names = Object.keys(counts).sort((p, q) => counts[q] - counts[p] || p.localeCompare(q, "sv"));
-  $fa.innerHTML = `<option value="">${esc(t.allA)}</option>` +
-    names.map(n => `<option value="${esc(n)}">${esc(n)} (${counts[n]})</option>`).join("") +
-    `<option value="__none">${esc(t.unsigned)} (${unsigned})</option>`;
-  $fa.value = a;
-  const years = [...new Set(ARTS.map(x => x.y))];
-  $fy.innerHTML = `<option value="">${esc(t.allY)}</option>` +
-    `<optgroup label="${esc(t.decades)}">` + [196, 197, 198].map(d => `<option value="d${d}">${d}0–${d}9</option>`).join("") + `</optgroup>` +
-    `<optgroup label="${esc(t.years)}">` + years.map(v => `<option value="y${v}">${v}</option>`).join("") + `</optgroup>`;
-  $fy.value = y;
-}
-
-const exBtn = s => `<button data-q="${esc(s)}">${esc(s)}</button>`;
-function applyLang(){
-  const t = T[L];
-  document.documentElement.lang = L;
-  document.title = t.title;
-  document.querySelectorAll("[data-t]").forEach(el => { el.textContent = t[el.dataset.t]; });
-  $q.placeholder = t.ph;
-  $q.setAttribute("aria-label", t.ph);
-  $fa.setAttribute("aria-label", t.allA);
-  $fy.setAttribute("aria-label", t.allY);
-  fillFilters(t);
-  document.getElementById("examples").innerHTML = esc(t.ex) + " " + t.examples.map(exBtn).join(" · ");
-  document.querySelectorAll(".hint button").forEach(b => b.addEventListener("click", () => { $q.value = b.dataset.q; $fa.value = ""; $fy.value = ""; LIMIT = 40; run(); $q.focus(); }));
-  document.getElementById("stats").textContent = t.stats(ARTS.length, WITH_REF, LINKED);
-  document.getElementById("coltable").innerHTML = `<tr><th>${esc(t.hAbbr)}</th><th>${esc(t.hCol)}</th><th>${esc(t.hLang)}</th></tr>` +
-    COLS.filter(c => c[0] !== "PAN").map(c => `<tr><td class="abbr">${esc(c[1])}</td><td>${esc(c[2])}</td><td>${t.lang[c[3]]}</td></tr>`).join("");
-  document.getElementById("sources").innerHTML = t.sources;
-  document.getElementById("foot").innerHTML = `${esc(OTHER[L][0])} <a href="https://prekensok.github.io/?lang=${L}" target="_blank" rel="noopener">${esc(OTHER[L][1])} ↗</a>`;
-  document.getElementById("langs").innerHTML = LANGS.map(([k, n]) => `<button lang="${k}" data-l="${k}" aria-pressed="${k === L}">${n}</button>`).join("");
-  document.querySelectorAll(".langs button").forEach(b => b.addEventListener("click", () => {
-    L = b.dataset.l;
-    try { localStorage.setItem("lang", L); } catch(e){}
-    applyLang(); run();
-  }));
-}
-
-$q.addEventListener("input", () => { LIMIT = 40; run(); });
-[$fa, $fy].forEach(s => s.addEventListener("change", () => { LIMIT = 40; run(); }));
-function fromHash(){ if (location.hash) $q.value = decodeURIComponent(location.hash.slice(1)); }
-window.addEventListener("hashchange", () => { fromHash(); LIMIT = 40; run(); });
-fromHash();
-applyLang();
-run();
-</script>
 </body>
 </html>
