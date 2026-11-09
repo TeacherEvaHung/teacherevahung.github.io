@@ -59,6 +59,7 @@ a:hover{text-decoration:underline}
 .empty{color:var(--muted);padding:20px 0}
 .more{display:block;margin:16px auto;font:inherit;padding:10px 20px;border:1px solid var(--accent);border-radius:var(--radius);background:transparent;color:var(--accent);cursor:pointer}
 .more:hover{background:var(--accent);color:var(--hit-ink)}
+.foot{margin:24px 0 0;text-align:center;font-size:17px;color:var(--muted)}
 @media (max-width:640px){
   .top .in{padding:16px 16px 18px}
   .top .name{font-size:28px}
@@ -97,6 +98,7 @@ a:hover{text-decoration:underline}
     <table id="coltable"></table>
     <p class="det" style="margin-top:14px" id="sources"></p>
   </details>
+  <p class="foot" id="foot"></p>
 </div>
 
 <script src="data/fadersrosten.js"></script>
@@ -196,6 +198,8 @@ const T = {
     lang:{no:"Norwegian",sv:"Swedish",fi:"Finnish",se:"Northern Sami",smj:"Lule Sami",de:"German",en:"English"}
   }
 };
+// Krysslenke nederst på siden, med navnet den andre appen bruker på hvert språk
+const OTHER = {no:["Se også:","Læstadiansk prekensøk"],sv:["Se även:","Laestadiansk predikosök"],fi:["Katso myös:","Laestadiuksen saarnahaku"],en:["See also:","Laestadius Sermon Search"]};
 let L = "no";
 try {
   const p = new URLSearchParams(location.search).get("lang");
@@ -569,6 +573,7 @@ function applyLang(){
   document.getElementById("coltable").innerHTML = `<tr><th>${esc(t.hAbbr)}</th><th>${esc(t.hCol)}</th><th>${esc(t.hLang)}</th></tr>` +
     COLS.filter(c => c[0] !== "PAN").map(c => `<tr><td class="abbr">${esc(c[1])}</td><td>${esc(c[2])}</td><td>${t.lang[c[3]]}</td></tr>`).join("");
   document.getElementById("sources").innerHTML = t.sources;
+  document.getElementById("foot").innerHTML = `${esc(OTHER[L][0])} <a href="https://prekensok.github.io/?lang=${L}" target="_blank" rel="noopener">${esc(OTHER[L][1])} ↗</a>`;
   document.getElementById("langs").innerHTML = LANGS.map(([k, n]) => `<button lang="${k}" data-l="${k}" aria-pressed="${k === L}">${n}</button>`).join("");
   document.querySelectorAll(".langs button").forEach(b => b.addEventListener("click", () => {
     L = b.dataset.l;
