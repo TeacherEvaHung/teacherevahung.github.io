@@ -85,7 +85,6 @@ a:hover{text-decoration:underline}
     <select id="fy"></select>
   </div>
   <p class="hint" id="examples"></p>
-  <p class="hint" id="tip"></p>
   <p class="note" data-t="note"></p>
   </div>
 
@@ -115,9 +114,7 @@ const T = {
     ph:"Søk: bibeltekst, tittel, forfatter, år, «1975 nr 2» …",
     allA:"Alle forfattere", allY:"Alle årganger", decades:"Tiår", years:"Årganger", unsigned:"Uten signatur",
     ex:"Eksempler:", examples:["Luk 15","Matt 5:1-12","Rom 10","påske","nattverd","Luther","Försoning","1975 nr 2","RRS 47"],
-    tip:n => `For Læstadius-prekenene kan du også søke på nummeret i andre samlinger, f.eks. «RRS 47», eller bare ${n} for å finne det nummeret i alle samlingene.`,
-    note:"Søket dekker innholdsfortegnelsene, ikke hele artikkelteksten. Titlene står slik de er trykt.",
-    start:"Skriv i søkefeltet, eller velg en forfatter eller årgang.",
+    note:"Søket dekker innholdsfortegnelsene, ikke hele artikkelteksten. Titlene står slik de er trykt. Prøv også å velge en forfatter eller årgang.",
     count:n => `${n} treff`, more:n => `Vis flere (${n})`,
     none:q => `Ingen treff for «${q}». Prøv en bibeltekst (f.eks. «Luk 15»), et ord fra en svensk tittel («nåd», «synd»), en forfatter («Bunyan»), et år («1975») eller samling + nummer («RRS 47»).`,
     issue:(g,y,n) => `Årgang ${g} · ${y} nr ${n}`, page:"s.",
@@ -137,9 +134,7 @@ const T = {
     ph:"Sök: bibeltext, titel, författare, år, «1975 nr 2» …",
     allA:"Alla författare", allY:"Alla årgångar", decades:"Årtionden", years:"Årgångar", unsigned:"Utan signatur",
     ex:"Exempel:", examples:["Luk 15","Matt 5:1-12","Rom 10","påsk","nattvard","Luther","Försoning","1975 nr 2","RRS 47"],
-    tip:n => `För Laestadius predikningar kan du också söka på numret i andra samlingar, t.ex. «RRS 47», eller bara ${n} för att hitta det numret i alla samlingar.`,
-    note:"Sökningen omfattar innehållsförteckningarna, inte artiklarnas fulla text. Titlarna återges som de är tryckta.",
-    start:"Skriv i sökfältet, eller välj en författare eller årgång.",
+    note:"Sökningen omfattar innehållsförteckningarna, inte artiklarnas fulla text. Titlarna återges som de är tryckta. Prova också att välja en författare eller årgång.",
     count:n => `${n} ${n === 1 ? "träff" : "träffar"}`, more:n => `Visa fler (${n})`,
     none:q => `Inga träffar för «${q}». Prova en bibeltext (t.ex. «Luk 15»), ett ord ur en titel («nåd», «synd»), en författare («Bunyan»), ett år («1975») eller samling + nummer («RRS 47»).`,
     issue:(g,y,n) => `Årgång ${g} · ${y} nr ${n}`, page:"s.",
@@ -159,9 +154,7 @@ const T = {
     ph:"Hae: raamatunkohta, otsikko, kirjoittaja, vuosi, «1975 nr 2» …",
     allA:"Kaikki kirjoittajat", allY:"Kaikki vuosikerrat", decades:"Vuosikymmenet", years:"Vuosikerrat", unsigned:"Ilman nimeä",
     ex:"Esimerkkejä:", examples:["Luuk. 15","Matt. 5:1-12","Room. 10","pääsiäinen","ehtoollinen","Luther","1975 nr 2","RRS 47"],
-    tip:n => `Laestadiuksen saarnoja voi hakea myös muiden kokoelmien numeroilla, esim. «RRS 47», tai pelkällä numerolla ${n}.`,
-    note:"Haku kattaa sisällysluettelot, ei artikkelien koko tekstiä. Otsikot ovat painoasussaan.",
-    start:"Kirjoita hakukenttään tai valitse kirjoittaja tai vuosikerta.",
+    note:"Haku kattaa sisällysluettelot, ei artikkelien koko tekstiä. Otsikot ovat painoasussaan. Kokeile myös valita kirjoittaja tai vuosikerta.",
     count:n => `${n} ${n === 1 ? "osuma" : "osumaa"}`, more:n => `Näytä lisää (${n})`,
     none:q => `Ei osumia haulle «${q}». Kokeile raamatunkohtaa (esim. «Luuk. 15»), ruotsinkielistä otsikon sanaa («nåd», «synd»), kirjoittajaa («Bunyan»), vuotta («1975») tai kokoelmaa ja numeroa («RRS 47»).`,
     issue:(g,y,n) => `Vuosikerta ${g} · ${y} nro ${n}`, page:"s.",
@@ -181,9 +174,7 @@ const T = {
     ph:"Search: Bible text, title, author, year, “1975 nr 2” …",
     allA:"All authors", allY:"All volumes", decades:"Decades", years:"Volumes", unsigned:"Unsigned",
     ex:"Examples:", examples:["Luke 15","Matt 5:1-12","Rom 10","Easter","communion","Luther","1975 nr 2","RRS 47"],
-    tip:n => `Sermons by Laestadius can also be found by their number in other collections, e.g. “RRS 47”, or just ${n} to find that number in every collection.`,
-    note:"The search covers the tables of contents, not the full text of the articles. Titles are shown as printed, in Swedish.",
-    start:"Type in the search box, or choose an author or volume.",
+    note:"The search covers the tables of contents, not the full text of the articles. Titles are shown as printed, in Swedish. You can also try choosing an author or volume.",
     count:n => `${n} ${n === 1 ? "result" : "results"}`, more:n => `Show more (${n})`,
     none:q => `No results for “${q}”. Try a Bible text (e.g. “Luke 15”), a Swedish title word (“nåd”, “synd”), an author (“Bunyan”), a year (“1975”) or collection + number (“RRS 47”).`,
     issue:(g,y,n) => `Volume ${g} · ${y} no. ${n}`, page:"p.",
@@ -518,7 +509,7 @@ function run(){
   let res, needles;
   if (!q.trim()){
     if (!$fa.value && !$fy.value){
-      $count.textContent = t.start;
+      $count.textContent = "";
       $out.innerHTML = ""; saveUrl(); return;
     }
     res = INDEX.filter(passes).map(it => ({it, score:1, m:{cols:new Set()}})); needles = [];
@@ -567,7 +558,6 @@ function applyLang(){
   $fy.setAttribute("aria-label", t.allY);
   fillFilters(t);
   document.getElementById("examples").innerHTML = esc(t.ex) + " " + t.examples.map(exBtn).join(" · ");
-  document.getElementById("tip").innerHTML = esc(t.tip("§")).replace("§", exBtn("83"));
   document.querySelectorAll(".hint button").forEach(b => b.addEventListener("click", () => { $q.value = b.dataset.q; $fa.value = ""; $fy.value = ""; LIMIT = 40; run(); $q.focus(); }));
   document.getElementById("stats").textContent = t.stats(ARTS.length, WITH_REF, LINKED);
   document.getElementById("coltable").innerHTML = `<tr><th>${esc(t.hAbbr)}</th><th>${esc(t.hCol)}</th><th>${esc(t.hLang)}</th></tr>` +
