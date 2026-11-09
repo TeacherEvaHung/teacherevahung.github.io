@@ -4,15 +4,15 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Søk i Fadersrøsten</title>
-<meta name="theme-color" content="#1c222b">
+<meta name="theme-color" content="#28171b">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
 <style>
-/* Samme tema som Læstadiansk prekensøk: mørkt blågrått med salviegrønn aksent */
+/* Eget tema for Fadersrösten: mørkt vinrødt med ravgul aksent */
 :root{
-  --bg:#2a313b; --panel:#1c222b; --ink:#f2f4f7; --muted:rgba(242,244,247,.68); --line:#3a4452;
-  --accent:#9cc4b2; --hit:#9cc4b2; --hit-ink:#1c222b; --none:rgba(242,244,247,.45); --radius:6px;
+  --bg:#3a2429; --panel:#28171b; --ink:#f7f1e8; --muted:rgba(247,241,232,.7); --line:#553a40; --field:#6b4c53;
+  --accent:#e6b873; --hit:#e6b873; --hit-ink:#28171b; --none:rgba(247,241,232,.5); --radius:6px;
   color-scheme: dark;
 }
 *{box-sizing:border-box}
@@ -29,15 +29,15 @@ body{margin:0;background:var(--bg);color:var(--ink);font:18px/1.55 "Source Sans 
 h1{font-size:30px;margin:0 0 8px;font-weight:400;color:var(--accent)}
 .sub{color:var(--ink);margin:0 0 20px;font-size:18px}
 .search{display:flex;gap:8px;flex-wrap:wrap}
-.search input{flex:1 1 100%;min-width:0;font:inherit;font-size:20px;padding:12px 14px;border:1px solid #4b5665;border-radius:var(--radius);background:var(--bg);color:var(--ink)}
+.search input{flex:1 1 100%;min-width:0;font:inherit;font-size:20px;padding:12px 14px;border:1px solid var(--field);border-radius:var(--radius);background:var(--bg);color:var(--ink)}
 .search input::placeholder{color:var(--none)}
 .search input:focus,.search select:focus,.langs button:focus-visible{outline:2px solid var(--accent);outline-offset:0}
-.search select{flex:1 1 260px;min-width:0;font:inherit;font-size:16px;padding:10px;border:1px solid #4b5665;border-radius:var(--radius);background:var(--bg);color:var(--ink);max-width:100%}
+.search select{flex:1 1 260px;min-width:0;font:inherit;font-size:16px;padding:10px;border:1px solid var(--field);border-radius:var(--radius);background:var(--bg);color:var(--ink);max-width:100%}
 .hint{color:var(--muted);font-size:14px;margin:12px 0 0}
 .hint + .hint{margin-top:6px}
 .hint button{font:inherit;background:none;border:0;color:var(--accent);cursor:pointer;padding:0}
 .hint button:hover{text-decoration:underline}
-.note{margin:16px 0 0;padding:10px 14px;border-left:3px solid var(--accent);color:var(--ink);font-size:15px;background:rgba(156,196,178,.08);border-radius:0 var(--radius) var(--radius) 0}
+.note{margin:16px 0 0;padding:10px 14px;border-left:3px solid var(--accent);color:var(--ink);font-size:15px;background:rgba(230,184,115,.09);border-radius:0 var(--radius) var(--radius) 0}
 .count{color:var(--ink);font-size:16px;margin:0 0 12px}
 .card{background:var(--panel);padding:28px 40px;margin-bottom:16px;border-radius:var(--radius)}
 .texts{font-size:26px;color:var(--accent);line-height:1.25}
